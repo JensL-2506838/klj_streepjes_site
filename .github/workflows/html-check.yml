@@ -23,4 +23,8 @@ jobs:
           node-version: 22
 
       - name: Check HTML files
-        run: npx --yes html-validate "**/*.html"
+        run: |
+          find . -type f -name "*.html" \
+            -not -path "./.git/*" \
+            -print0 |
+          xargs -0 -r npx --yes html-validate
