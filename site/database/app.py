@@ -35,3 +35,7 @@ def home():
 @app.get("/api/test")
 def send_test_message():
     return jsonify({"message": "this is a test message", "status": 200})
+
+@app.get("/api/users")
+def get_users():
+    return jsonify(query("SELECT username FROM users"))
