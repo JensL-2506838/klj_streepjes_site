@@ -34,4 +34,4 @@ def home():
 
 @app.get("/api/test")
 def send_test_message():
-    return jsonify({message: "this is a test message", status: 200})
+    return jsonify({"message": "this is a test message", "status": 200})
