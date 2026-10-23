@@ -1,0 +1,17 @@
+services:
+  web:
+    build: .
+    container_name: streepjes-web
+    ports:
+      - "8080:5000"
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+    # Dev mode: edits to your files show up without rebuilding.
+    # Remove these two lines when you deploy on CasaOS.
+    volumes:
+      - ./site:/app/site
+    command: gunicorn --reload -b 0.0.0.0:5000 app:app
