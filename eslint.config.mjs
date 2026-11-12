@@ -6,13 +6,13 @@ export default [
   {
     ignores: [
       "node_modules/**",
-      "site/database/**",
+      "klj_site/database/**",
       "coverage/**",
       "dist/**",
     ],
   },
   {
-    files: ["site/UI/logic/**/*.js"],
+    files: ["klj_site/UI/logic/**/*.js"],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",

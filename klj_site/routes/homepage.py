@@ -1,4 +1,4 @@
-from site.middleware.auth import require_login
+from klj_site.middleware.auth import require_login
 from flask import render_template
 
 
