@@ -1,3 +1,5 @@
 .idea
 .env
 .node_modules
+node_modules
+.idea/klj_streepjes_site.iml
