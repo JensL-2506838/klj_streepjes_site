@@ -5,7 +5,7 @@ import hmac
 import secrets
 
 
-def hash_password(plain_password: str) -> str:
+def hash_password(plain_password: str):
     """Hashes a password using PBKDF2-HMAC-SHA256 with a 16-byte random salt."""
     salt = secrets.token_bytes(16)
     iterations = 600_000
@@ -28,9 +28,9 @@ def verify_password(plain_password: str, stored_hash: str) -> bool:
         return False
 
 
-def is_valid_user(username, password) -> bool:
+def is_valid_user(username, password):
     db = DbConnection()
-    user_id: int | None = get_user_id(username)
+    user_id = get_user_id(username)
     if not user_id: return False
 
     if verify_password(password, db.get_password_hash(user_id)):
