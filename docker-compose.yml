@@ -10,8 +10,9 @@ services:
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASS}
+      FLASK_APP_SECRET_KEY: ${FLASK_APP_SECRET_KEY:?Set FLASK_APP_SECRET_KEY in .env}
     # Dev mode: edits to your files show up without rebuilding.
     # Remove these two lines when you deploy on CasaOS.
     volumes:
-      - ./site:/app/site
+      - ./klj_site:/app/klj_site
     command: gunicorn --reload -b 0.0.0.0:5000 app:app
