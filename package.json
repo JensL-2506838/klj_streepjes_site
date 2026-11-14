@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check:syntax": "find site/UI/logic -type f -name '*.js' -print0 | xargs -0 -r -n1 node --check",
-    "lint": "eslint site/UI/logic/",
-    "format:check": "prettier --check \"site/UI/logic/**/*.js\""
+    "check:syntax": "find klj_site/UI/logic -type f -name '*.js' -print0 | xargs -0 -r -n1 node --check",
+    "lint": "eslint klj_site/UI/logic/",
+    "format:check": "prettier --check \"klj_site/UI/logic/**/*.js\""
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",
