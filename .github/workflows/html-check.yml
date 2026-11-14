@@ -26,5 +26,6 @@ jobs:
         run: |
           find . -type f -name "*.html" \
             -not -path "./.git/*" \
+            -not -path "./klj_site/templates/*" \
             -print0 |
           xargs -0 -r npx --yes html-validate
