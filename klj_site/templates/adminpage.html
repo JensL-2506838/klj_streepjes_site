@@ -11,5 +11,17 @@
         <li>{{ user['username'] }} - {{ user['id'] }}</li>
       {% endfor %}
     </ul>
+
+    <h2>requested users</h2>
+    <ul>
+        {% for request in requested_users %}
+            <li>
+                {{ request['username'] }}
+                <form action="{{ url_for('approve_user', username=request['username']) }}" method="POST" style="display:inline;">
+                    <button type="submit">Approve</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
 </body>
 </html>

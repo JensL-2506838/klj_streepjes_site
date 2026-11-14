@@ -29,6 +29,9 @@ class DbConnection(QueryExecutor):
     def get_users(self):
         return self._query("SELECT id, username FROM users")
 
+    def get_requested_users(self):
+        return self._query("SELECT username FROM requested_users")
+
     def get_user_id(self, username):
         rows = self._query(
             "SELECT id FROM users WHERE username = %s LIMIT 1",
@@ -55,4 +58,22 @@ class DbConnection(QueryExecutor):
         self._query(
             "INSERT INTO requested_users (username, password_hash) VALUES (%s, %s)",
             (username, password_hash)
+        )
+
+    def approve_user(self, username):
+        # 1. Copy the user from requested_users into users (with default 'user' rights)
+        self._query(
+            """
+            INSERT INTO users (username, password_hash, rights)
+            SELECT username, password_hash, 'user'
+            FROM requested_users
+            WHERE username = %s
+            """,
+            (username,)
+        )
+
+        # 2. Remove them from requested_users
+        self._query(
+            "DELETE FROM requested_users WHERE username = %s",
+            (username,)
         )
