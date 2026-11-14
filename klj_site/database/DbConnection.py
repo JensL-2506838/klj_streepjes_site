@@ -50,3 +50,9 @@ class DbConnection(QueryExecutor):
             (user_id,),
         )
         return rows[0]["rights"] if rows else None
+
+    def request_account(self, username, password_hash):
+        self._query(
+            "INSERT INTO requested_users (username, password_hash) VALUES (%s, %s)",
+            (username, password_hash)
+        )
