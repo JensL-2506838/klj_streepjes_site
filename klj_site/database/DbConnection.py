@@ -42,3 +42,11 @@ class DbConnection(QueryExecutor):
             (user_id,),
         )
         return rows[0]["password_hash"] if rows else None
+
+    def get_rights(self, username):
+        user_id = self.get_user_id(username)
+        rows = self._query(
+            "SELECT rights FROM users WHERE id = %s LIMIT 1",
+            (user_id,),
+        )
+        return rows[0]["rights"] if rows else None

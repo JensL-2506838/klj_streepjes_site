@@ -8,6 +8,13 @@ def _require_login():
     return None
 
 
+def _require_admin():
+    _require_login()
+    if 'rights' in session and session["rights"] == "admin":
+        return redirect(url_for("adminpage"))
+    return None
+
+
 def _als_decorator(controle):
     """Turn one of the checks above into a decorator."""
     def decorator(functie):
@@ -21,3 +28,4 @@ def _als_decorator(controle):
     return decorator
 
 require_login = _als_decorator(_require_login)
+require_admin = _als_decorator(_require_admin)
