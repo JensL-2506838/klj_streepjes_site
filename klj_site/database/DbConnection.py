@@ -84,3 +84,9 @@ class DbConnection(QueryExecutor):
             (name,)
         )
         return awnser[0]["price"] if awnser else None
+
+    def new_event(self, name, price):
+        self._query(
+            "INSERT INTO events (name, price) VALUES (%s, %s)",
+            (name, price,)
+        )
