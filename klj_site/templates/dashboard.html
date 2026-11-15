@@ -5,6 +5,17 @@
     <title>Dashboard</title>
 </head>
 <body>
-    <h1>test test test</h1>
+    <h1>Dashboard</h1>
+    <h2>Current events</h2>
+    <ul>
+        {% for event in events %}
+            <li>
+                Title: {{ event['name'] }} / Price: {{ event['price'] }}
+                <a href="{{ url_for('event_visitor', event_name=event['name']) }}">
+                    <button type="button">Visit</button>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
 </body>
 </html>

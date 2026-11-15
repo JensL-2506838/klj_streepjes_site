@@ -77,3 +77,51 @@ class DbConnection(QueryExecutor):
             "DELETE FROM requested_users WHERE username = %s",
             (username,)
         )
+
+    def getPrice(self, name):
+        awnser = self._query(
+            "SELECT price FROM prices WHERE name = %s",
+            (name,)
+        )
+        return awnser[0]["price"] if awnser else None
+
+    def new_event(self, name, price):
+        self._query(
+            "INSERT INTO events (name, price) VALUES (%s, %s)",
+            (name, price,)
+        )
+
+    def get_events(self):
+        rows = self._query("SELECT name, price FROM events")
+        return rows if rows else None
+
+    def get_event_price(self, name):
+        awnser = self._query(
+            "SELECT price FROM events WHERE name = %s",
+            (name,)
+        )
+        return awnser[0]["price"] if awnser else None
+
+    def get_event_id(self, event_name):
+        awnser = self._query(
+            "SELECT id FROM events WHERE name = %s",
+            (event_name,)
+        )
+        return awnser[0]["id"] if awnser else None
+
+    def add_participant(self, event_id, user_id):
+        self._query(
+            "INSERT INTO event_participants (event_id, user_id) VALUES (%s, %s)",
+            (event_id, user_id,)
+        )
+
+    def get_participants(self, event_id):
+        awnser = self._query(
+            """SELECT username, id FROM users
+               WHERE id in (
+                    SELECT user_id FROM event_participants WHERE event_id = %s
+               )
+            """,
+            (event_id,)
+        )
+        return awnser if awnser else []
