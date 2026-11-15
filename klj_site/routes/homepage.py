@@ -1,6 +1,6 @@
 from klj_site.middleware.auth import require_login
 from klj_site.database.DbConnection import DbConnection
-from flask import render_template
+from flask import render_template, session, redirect, url_for
 
 
 def register_home_routes(app):
@@ -16,8 +16,17 @@ def register_home_routes(app):
     def event_visitor(event_name):
         db = DbConnection()
         event_price = db.get_event_price(event_name)
+        participants = db.get_participants(db.get_event_id(event_name))
         return render_template(
             "eventPage.html",
             event_name=event_name,
-            event_price=event_price
+            event_price=event_price,
+            participants=participants
         )
+
+    @app.route("/participate/<string:event_name>")
+    @require_login
+    def participate(event_name):
+        db = DbConnection()
+        db.add_participant(db.get_event_id(event_name), session['id'])
+        return redirect(url_for("event_visitor", event_name=event_name))

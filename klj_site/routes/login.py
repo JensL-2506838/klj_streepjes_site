@@ -12,6 +12,7 @@ def register_login_routes(app):
 
         if is_valid_user(request.form.get("username"), request.form.get("password")):
             session['username'], session["password"] = request.form.get("username"), request.form.get("password")
+            session['id'] = db.get_user_id(session['username'])
             session['rights'] = db.get_rights(session['username'])
             return redirect(url_for("dashboard"))
         return redirect(url_for("login"))

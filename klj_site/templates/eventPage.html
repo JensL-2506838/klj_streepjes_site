@@ -6,6 +6,19 @@
 </head>
 <body>
     <h1>event page</h1>
-    <h2>{{ event_name }} - Price: {{ event_price }}</h2>
+    <h2>
+        {{ event_name }} - Price: {{ event_price }}
+        <a href="{{ url_for('participate', event_name=event_name) }}">
+            <button type="button">Participate</button>
+        </a>
+    </h2>
+
+    <ul>
+        {% for participant in participants %}
+            <li>
+                {{ participant['username'] }}
+            </li>
+        {% endfor %}
+    </ul>
 </body>
 </html>

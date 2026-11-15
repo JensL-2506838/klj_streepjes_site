@@ -101,3 +101,27 @@ class DbConnection(QueryExecutor):
             (name,)
         )
         return awnser[0]["price"] if awnser else None
+
+    def get_event_id(self, event_name):
+        awnser = self._query(
+            "SELECT id FROM events WHERE name = %s",
+            (event_name,)
+        )
+        return awnser[0]["id"] if awnser else None
+
+    def add_participant(self, event_id, user_id):
+        self._query(
+            "INSERT INTO event_participants (event_id, user_id) VALUES (%s, %s)",
+            (event_id, user_id,)
+        )
+
+    def get_participants(self, event_id):
+        awnser = self._query(
+            """SELECT username, id FROM users
+               WHERE id in (
+                    SELECT user_id FROM event_participants WHERE event_id = %s
+               )
+            """,
+            (event_id,)
+        )
+        return awnser if awnser else []
