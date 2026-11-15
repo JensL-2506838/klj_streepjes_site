@@ -94,3 +94,10 @@ class DbConnection(QueryExecutor):
     def get_events(self):
         rows = self._query("SELECT name, price FROM events")
         return rows if rows else None
+
+    def get_event_price(self, name):
+        awnser = self._query(
+            "SELECT price FROM events WHERE name = %s",
+            (name,)
+        )
+        return awnser[0]["price"] if awnser else None
