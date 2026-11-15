@@ -5,6 +5,14 @@
     <title>Dashboard</title>
 </head>
 <body>
-    <h1>test test test</h1>
+    <h1>Dashboard</h1>
+    <h2>Current events</h2>
+    <ul>
+        {% for event in events %}
+            <li>
+                Title: {{ event['name'] }} / Price: {{ event['price'] }}
+            </li>
+        {% endfor %}
+    </ul>
 </body>
 </html>
