@@ -1,4 +1,4 @@
-from flask import render_template, jsonify
+from flask import render_template, jsonify, request
 from klj_site.middleware.auth import require_admin
 from klj_site.database.DbConnection import DbConnection
 
@@ -17,3 +17,13 @@ def register_admin_routes(app):
         db = DbConnection()
         db.approve_user(username)  # Runs your Python function
         return jsonify({"status": "ok"}), 200
+
+    @app.route("/newEvent", methods=['GET', 'POST'])
+    @require_admin
+    def newEvent():
+        db = DbConnection()
+        if request.method == 'GET':
+            return render_template("newEvent.html", standardPrice=db.getPrice("standardPrice"))
+
+        # TODO: add form post method in here
+        return render_template("newEvent.html", standardPrice=5)

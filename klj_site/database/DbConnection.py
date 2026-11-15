@@ -77,3 +77,10 @@ class DbConnection(QueryExecutor):
             "DELETE FROM requested_users WHERE username = %s",
             (username,)
         )
+
+    def getPrice(self, name):
+        awnser = self._query(
+            "SELECT price FROM prices WHERE name = %s",
+            (name,)
+        )
+        return awnser[0]["price"] if awnser else None
