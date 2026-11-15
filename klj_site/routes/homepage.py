@@ -1,5 +1,6 @@
 from klj_site.middleware.auth import require_login
 from klj_site.database.DbConnection import DbConnection
+from klj_site.services.extra import include_participant_drinks
 from flask import render_template, session, redirect, url_for
 
 
@@ -16,7 +17,8 @@ def register_home_routes(app):
     def event_visitor(event_name):
         db = DbConnection()
         event_price = db.get_event_price(event_name)
-        participants = db.get_participants(db.get_event_id(event_name))
+        event_id = db.get_event_id(event_name)
+        participants = include_participant_drinks(db.get_participants(event_id), event_id)
         return render_template(
             "eventPage.html",
             event_name=event_name,
@@ -28,5 +30,27 @@ def register_home_routes(app):
     @require_login
     def participate(event_name):
         db = DbConnection()
+        # TODO: make sure people can't participate twice!!!
         db.add_participant(db.get_event_id(event_name), session['id'])
+        return redirect(url_for("event_visitor", event_name=event_name))
+
+    @app.route("/increase_drink_counter/<string:event_name>/<int:user_id>")
+    @require_login
+    def increase_drink_counter(event_name, user_id):
+        db = DbConnection()
+        event_id = db.get_event_id(event_name)
+        cur_amount_of_drinks = db.get_amount_of_drinks(event_id, user_id)
+        db.set_amount_of_drinks(event_id, user_id, cur_amount_of_drinks + 1)
+
+        return redirect(url_for("event_visitor", event_name=event_name))
+
+    @app.route("/decrease_drink_counter/<string:event_name>/<int:user_id>")
+    @require_login
+    def decrease_drink_counter(event_name, user_id):
+        db = DbConnection()
+        event_id = db.get_event_id(event_name)
+        cur_amount_of_drinks = db.get_amount_of_drinks(event_id, user_id)
+        if cur_amount_of_drinks > 0:
+            db.set_amount_of_drinks(event_id, user_id, cur_amount_of_drinks - 1)
+
         return redirect(url_for("event_visitor", event_name=event_name))
