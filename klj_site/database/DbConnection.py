@@ -90,3 +90,7 @@ class DbConnection(QueryExecutor):
             "INSERT INTO events (name, price) VALUES (%s, %s)",
             (name, price,)
         )
+
+    def get_events(self):
+        rows = self._query("SELECT name, price FROM events")
+        return rows if rows else None

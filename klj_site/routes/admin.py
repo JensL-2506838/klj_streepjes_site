@@ -9,7 +9,13 @@ def register_admin_routes(app):
         db = DbConnection()
         users = db.get_users()
         requested_users = db.get_requested_users()
-        return render_template("adminpage.html", users=users, requested_users=requested_users)
+        events = db.get_events()
+        return render_template(
+            "adminpage.html",
+            users=users,
+            requested_users=requested_users,
+            events=events
+        )
 
     @app.route("/approve_user/<string:username>", methods=["POST"])
     @require_admin
