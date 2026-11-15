@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>newEvent</title>
+</head>
+<body>
+    <h1>new event</h1>
+    <form action="{{ url_for('newEvent') }}" method="post">
+        <div>
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title">
+        </div>
+
+        <div>
+            <label for="price">Price:</label>
+            <input type="number" id="price" name="price" value="{{ standardPrice }}">
+        </div>
+        <button type="submit">add event</button>
+    </form>
+</body>
+</html>
