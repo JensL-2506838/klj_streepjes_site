@@ -23,15 +23,17 @@ def register_home_routes(app):
             "eventPage.html",
             event_name=event_name,
             event_price=event_price,
-            participants=participants
+            participants=participants,
+            user_is_participant=db.is_participant(event_id, session['id'])
         )
 
     @app.route("/participate/<string:event_name>")
     @require_login
     def participate(event_name):
         db = DbConnection()
-        # TODO: make sure people can't participate twice!!!
-        db.add_participant(db.get_event_id(event_name), session['id'])
+        event_id = db.get_event_id(event_name)
+        if not db.is_participant(event_id, session['id']):
+            db.add_participant(event_id, session['id'])
         return redirect(url_for("event_visitor", event_name=event_name))
 
     @app.route("/increase_drink_counter/<string:event_name>/<int:user_id>")

@@ -132,6 +132,13 @@ class DbConnection(QueryExecutor):
         )
         return awnser if awnser else []
 
+    def is_participant(self, event_id, user_id):
+        awnser = self._query(
+            "SELECT * FROM event_participants WHERE event_id = %s AND user_id = %s",
+            (event_id, user_id)
+        )
+        return True if awnser else False
+
     def get_amount_of_drinks(self, event_id, user_id):
         awnser = self._query(
             "SELECT amount FROM participant_drinks WHERE event_id = %s AND user_id = %s",
