@@ -37,3 +37,9 @@ def register_admin_routes(app):
             db.new_event(event_name, event_price)
             return redirect(url_for("adminpage"))
         return redirect(url_for("newEvent"))
+
+    @app.route("/deleteEvent/<int:event_id>")
+    @require_admin
+    def deleteEvent(event_id):
+        DbConnection().delete_event(event_id)
+        return redirect(url_for('adminpage'))

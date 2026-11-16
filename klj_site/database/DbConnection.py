@@ -92,8 +92,8 @@ class DbConnection(QueryExecutor):
         )
 
     def get_events(self):
-        rows = self._query("SELECT name, price FROM events")
-        return rows if rows else None
+        rows = self._query("SELECT * FROM events")
+        return rows if rows else []
 
     def get_event_price(self, name):
         awnser = self._query(
@@ -108,6 +108,9 @@ class DbConnection(QueryExecutor):
             (event_name,)
         )
         return awnser[0]["id"] if awnser else None
+
+    def delete_event(self, event_id):
+        self._query("DELETE FROM events WHERE id = %s", (event_id,))
 
     def add_participant(self, event_id, user_id):
         # add the participant
