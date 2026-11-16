@@ -17,6 +17,13 @@
         {% for participant in participants %}
             <li>
                 {{ participant['username'] }}
+                <a href="{{ url_for('decrease_drink_counter', event_name=event_name, user_id=participant['id']) }}">
+                    <button type="button">-</button>
+                </a>
+                {{ participant['amount'] }}
+                <a href="{{ url_for('increase_drink_counter', event_name=event_name, user_id=participant['id']) }}">
+                    <button type="button">+</button>
+                </a>
             </li>
         {% endfor %}
     </ul>

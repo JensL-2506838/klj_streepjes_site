@@ -110,9 +110,15 @@ class DbConnection(QueryExecutor):
         return awnser[0]["id"] if awnser else None
 
     def add_participant(self, event_id, user_id):
+        # add the participant
         self._query(
             "INSERT INTO event_participants (event_id, user_id) VALUES (%s, %s)",
             (event_id, user_id,)
+        )
+        # set its drinks to zero
+        self._query(
+            "INSERT INTO participant_drinks (event_id, user_id, amount) VALUES (%s, %s, 0)",
+            (event_id, user_id)
         )
 
     def get_participants(self, event_id):
@@ -125,3 +131,20 @@ class DbConnection(QueryExecutor):
             (event_id,)
         )
         return awnser if awnser else []
+
+    def get_amount_of_drinks(self, event_id, user_id):
+        awnser = self._query(
+            "SELECT amount FROM participant_drinks WHERE event_id = %s AND user_id = %s",
+            (event_id, user_id)
+        )
+        return int(awnser[0]["amount"]) if awnser else 0
+
+    def set_amount_of_drinks(self, event_id, user_id, amount):
+        self._query(
+            """
+            UPDATE participant_drinks
+            SET amount = %s
+            WHERE event_id = %s AND user_id = %s
+            """,
+            (amount, event_id, user_id)
+        )
