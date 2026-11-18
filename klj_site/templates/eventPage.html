@@ -8,9 +8,11 @@
     <h1>event page</h1>
     <h2>
         {{ event_name }} - Price: {{ event_price }}
-        <a href="{{ url_for('participate', event_name=event_name) }}">
-            <button type="button">Participate</button>
-        </a>
+        {% if not user_is_participant %}
+            <a href="{{ url_for('participate', event_name=event_name) }}">
+                <button type="button">Participate</button>
+            </a>
+        {% endif %}
     </h2>
 
     <ul>
