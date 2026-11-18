@@ -2,6 +2,7 @@ from flask import render_template, jsonify, request, redirect, url_for
 from klj_site.middleware.auth import require_admin
 from klj_site.database.DbConnection import DbConnection
 
+
 def register_admin_routes(app):
     @app.route("/adminpage")
     @require_admin
@@ -33,7 +34,13 @@ def register_admin_routes(app):
 
         event_name = request.form.get("title")
         event_price = request.form.get("price")
-        if event_name and event_price:
+        if event_name and event_price and int(event_price) >= 0:
             db.new_event(event_name, event_price)
             return redirect(url_for("adminpage"))
         return redirect(url_for("newEvent"))
+
+    @app.route("/deleteEvent/<int:event_id>")
+    @require_admin
+    def deleteEvent(event_id):
+        DbConnection().delete_event(event_id)
+        return redirect(url_for('adminpage'))

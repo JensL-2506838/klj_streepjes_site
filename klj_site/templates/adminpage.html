@@ -25,10 +25,16 @@
     </ul>
 
     <h2>Events</h2>
+    <a href="{{ url_for('newEvent') }}">
+        <button type="button">Create new event</button>
+    </a>
     <ul>
         {% for event in events %}
             <li>
                 Title: {{ event['name'] }} / Price: {{ event['price'] }}
+                <a href="{{ url_for('deleteEvent', event_id=event['id']) }}">
+                    <button type="button">Delete</button>
+                </a>
             </li>
         {% endfor %}
     </ul>
