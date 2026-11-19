@@ -4,3 +4,4 @@
 node_modules
 .venv
 .idea/klj_streepjes_site.iml
+/node_modules/
