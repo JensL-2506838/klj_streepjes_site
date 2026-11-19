@@ -27,6 +27,18 @@ def register_home_routes(app):
             user_is_participant=db.is_participant(event_id, session['id'])
         )
 
+    @app.route("/pay/<float:amount>/<string:event_name>")
+    @require_login
+    def pay(amount, event_name):
+        db = DbConnection()
+        messages = session.get("alertMessages", [])
+        messages.append(f"Your total is {float(amount) * float(db.get_event_price(event_name))}")
+        session['alertMessages'] = messages
+
+        db.set_amount_of_drinks(db.get_event_id(event_name), session['id'], 0)
+
+        return redirect(url_for('event_visitor', event_name=event_name))
+
     @app.route("/participate/<string:event_name>")
     @require_login
     def participate(event_name):

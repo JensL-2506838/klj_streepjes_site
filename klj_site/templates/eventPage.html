@@ -26,6 +26,11 @@
                 <a href="{{ url_for('increase_drink_counter', event_name=event_name, user_id=participant['id']) }}">
                     <button type="button">+</button>
                 </a>
+                {% if session['id'] == participant['id'] %}
+                    <a href="{{ url_for('pay', amount=participant['amount'], event_name=event_name) }}">
+                        <button type="button">Pay</button>
+                    </a>
+                {% endif %}
             </li>
         {% endfor %}
     </ul>
