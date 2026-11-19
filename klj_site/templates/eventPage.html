@@ -9,7 +9,7 @@
     <h2>
         {{ event_name }} - Price: {{ event_price }}
         {% if not user_is_participant %}
-            <a href="{{ url_for('participate', event_name=event_name) }}">
+            <a href="{{ url_for('participate', event_id=event_id) }}">
                 <button type="button">Participate</button>
             </a>
         {% endif %}
@@ -19,15 +19,15 @@
         {% for participant in participants %}
             <li>
                 {{ participant['username'] }}
-                <a href="{{ url_for('decrease_drink_counter', event_name=event_name, user_id=participant['id']) }}">
+                <a href="{{ url_for('decrease_drink_counter', event_id=event_id, user_id=participant['id']) }}">
                     <button type="button">-</button>
                 </a>
                 {{ participant['amount'] }}
-                <a href="{{ url_for('increase_drink_counter', event_name=event_name, user_id=participant['id']) }}">
+                <a href="{{ url_for('increase_drink_counter', event_id=event_id, user_id=participant['id']) }}">
                     <button type="button">+</button>
                 </a>
                 {% if session['id'] == participant['id'] %}
-                    <a href="{{ url_for('pay', amount=participant['amount'], event_name=event_name) }}">
+                    <a href="{{ url_for('pay', amount=participant['amount'], event_id=event_id) }}">
                         <button type="button">Pay</button>
                     </a>
                 {% endif %}
