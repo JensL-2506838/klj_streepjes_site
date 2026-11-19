@@ -30,4 +30,11 @@ def register_login_routes(app):
 
         db.request_account(username, hash_password(password))
 
+        messages = session.get("alertMessages", [])
+        messages.append(
+            "Your account has been requested. You must wait for an administrator to accept your request."
+        )
+
+        session['alertMessages'] = messages
+
         return redirect("login")
