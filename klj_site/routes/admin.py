@@ -50,14 +50,6 @@ def register_admin_routes(app):
         event_name = request.form.get("title")
         event_price = request.form.get("price")
 
-        # TODO: this will be replaced when every url uses id instead of name
-        if any(char in str(event_name) for char in "/+"):
-            messages = session.get("alertMessages", [])
-            messages.append("Your event title contains invalid characters")
-            session['alertMessages'] = messages
-
-            return redirect(url_for("newEvent"))
-
         if event_name and event_price and float(event_price) >= 0:
             db.new_event(event_name, event_price)
             return redirect(url_for("adminpage"))
