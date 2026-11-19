@@ -10,7 +10,7 @@
       {% for user in users %}
         <li>
             {{ user['username'] }} - {{ user['id'] }}
-            <form action="{{ url_for('remove_user', username=user['username']) }}" method="POST" style="display:inline;">
+            <form action="{{ url_for('remove_user', user_id=user['id']) }}" method="POST" style="display:inline;">
                 <button type="submit">Remove</button>
             </form>
         </li>
@@ -22,10 +22,10 @@
         {% for request in requested_users %}
             <li>
                 {{ request['username'] }}
-                <form action="{{ url_for('approve_user', username=request['username']) }}" method="POST" style="display:inline;">
+                <form action="{{ url_for('approve_user', request_id=request['id']) }}" method="POST" style="display:inline;">
                     <button type="submit">Approve</button>
                 </form>
-                <form action="{{ url_for('decline_user', username=request['username']) }}" method="POST" style="display:inline;">
+                <form action="{{ url_for('decline_user', request_id=request['id']) }}" method="POST" style="display:inline;">
                     <button type="submit">Decline</button>
                 </form>
             </li>

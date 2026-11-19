@@ -18,25 +18,26 @@ def register_admin_routes(app):
             events=events
         )
 
-    @app.route("/approve_user/<string:username>", methods=["POST"])
+    # request_id = id of the row in requested_users
+    @app.route("/approve_user/<int:request_id>", methods=["POST"])
     @require_admin
-    def approve_user(username):
+    def approve_user(request_id):
         db = DbConnection()
-        db.approve_user(username)
+        db.approve_user(request_id)
         return jsonify({"status": "ok"}), 200
 
-    @app.route("/decline_user/<string:username>", methods=["POST"])
+    @app.route("/decline_user/<int:request_id>", methods=["POST"])
     @require_admin
-    def decline_user(username):
+    def decline_user(request_id):
         db = DbConnection()
-        db.decline_user(username)
+        db.decline_user(request_id)
         return jsonify({"status": "ok"}), 200
 
-    @app.route("/remove_user/<string:username>", methods=['POST'])
+    @app.route("/remove_user/<int:user_id>", methods=['POST'])
     @require_admin
-    def remove_user(username):
+    def remove_user(user_id):
         db = DbConnection()
-        db.remove_user(username)
+        db.remove_user(user_id)
         return jsonify({"status": "ok"}), 200
 
     @app.route("/newEvent", methods=['GET', 'POST'])
@@ -48,14 +49,6 @@ def register_admin_routes(app):
 
         event_name = request.form.get("title")
         event_price = request.form.get("price")
-
-        # TODO: this will be replaced when every url uses id instead of name
-        if any(char in str(event_name) for char in "/+"):
-            messages = session.get("alertMessages", [])
-            messages.append("Your event title contains invalid characters")
-            session['alertMessages'] = messages
-
-            return redirect(url_for("newEvent"))
 
         if event_name and event_price and float(event_price) >= 0:
             db.new_event(event_name, event_price)

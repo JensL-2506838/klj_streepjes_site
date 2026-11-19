@@ -30,7 +30,7 @@ class DbConnection(QueryExecutor):
         return self._query("SELECT id, username FROM users")
 
     def get_requested_users(self):
-        return self._query("SELECT username FROM requested_users")
+        return self._query("SELECT id, username FROM requested_users")
 
     def get_user_id(self, username):
         rows = self._query(
@@ -60,34 +60,36 @@ class DbConnection(QueryExecutor):
             (username, password_hash)
         )
 
-    def approve_user(self, username):
+    def approve_user(self, request_id):
+        # request_id is the id of the row in requested_users (not the id in users)
         # 1. Copy the user from requested_users into users (with default 'user' rights)
         self._query(
             """
             INSERT INTO users (username, password_hash, rights)
             SELECT username, password_hash, 'user'
             FROM requested_users
-            WHERE username = %s
+            WHERE id = %s
             """,
-            (username,)
+            (request_id,)
         )
 
         # 2. Remove them from requested_users
         self._query(
-            "DELETE FROM requested_users WHERE username = %s",
-            (username,)
+            "DELETE FROM requested_users WHERE id = %s",
+            (request_id,)
         )
 
-    def decline_user(self, username):
+    def decline_user(self, request_id):
+        # request_id is the id of the row in requested_users
         self._query(
-            "DELETE FROM requested_users WHERE username = %s",
-            (username,)
+            "DELETE FROM requested_users WHERE id = %s",
+            (request_id,)
         )
 
-    def remove_user(self, username):
+    def remove_user(self, user_id):
         self._query(
-            "DELETE FROM users WHERE username = %s",
-            (username,)
+            "DELETE FROM users WHERE id = %s",
+            (user_id,)
         )
 
     def getPrice(self, name):
@@ -107,12 +109,20 @@ class DbConnection(QueryExecutor):
         rows = self._query("SELECT * FROM events")
         return rows if rows else []
 
-    def get_event_price(self, name):
+    def get_event_price(self, event_id):
         awnser = self._query(
-            "SELECT price FROM events WHERE name = %s",
-            (name,)
+            "SELECT price FROM events WHERE id = %s",
+            (event_id,)
         )
         return awnser[0]["price"] if awnser else None
+
+    def get_event_name(self, event_id):
+        # needed because routes now only get the id, but the page still shows the name
+        awnser = self._query(
+            "SELECT name FROM events WHERE id = %s",
+            (event_id,)
+        )
+        return awnser[0]["name"] if awnser else None
 
     def get_event_id(self, event_name):
         awnser = self._query(
