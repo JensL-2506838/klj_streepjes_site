@@ -18,5 +18,11 @@
         </div>
         <button type="submit">add event</button>
     </form>
+
+    {% for message in alertMessages %}
+        <script>
+            alert({{ message | tojson }});
+        </script>
+    {% endfor %}
 </body>
 </html>

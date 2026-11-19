@@ -29,5 +29,11 @@
             </li>
         {% endfor %}
     </ul>
+
+    {% for message in alertMessages %}
+        <script>
+            alert({{ message | tojson }});
+        </script>
+    {% endfor %}
 </body>
 </html>
