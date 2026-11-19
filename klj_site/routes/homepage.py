@@ -1,4 +1,6 @@
+import pymysql
 from klj_site.middleware.auth import require_login
+from klj_site.middleware.alert_handler import add_alert
 from klj_site.database.DbConnection import DbConnection
 from klj_site.services.extra import include_participant_drinks
 from flask import render_template, session, redirect, url_for
@@ -33,11 +35,15 @@ def register_home_routes(app):
     @require_login
     def pay(amount, event_id):
         db = DbConnection()
-        messages = session.get("alertMessages", [])
-        messages.append(f"Your total is {float(amount) * float(db.get_event_price(event_id))}")
-        session['alertMessages'] = messages
+        try:
+            messages = session.get("alertMessages", [])
+            messages.append(f"Your total is {float(amount) * float(db.get_event_price(event_id))}")
+            session['alertMessages'] = messages
 
-        db.set_amount_of_drinks(event_id, session['id'], 0)
+            db.set_amount_of_drinks(event_id, session['id'], 0)
+        except pymysql.MySQLError:
+            app.logger.exception("Database error in pay")
+            add_alert("Something went wrong while paying, please try again.")
 
         return redirect(url_for('event_visitor', event_id=event_id))
 
@@ -45,16 +51,24 @@ def register_home_routes(app):
     @require_login
     def participate(event_id):
         db = DbConnection()
-        if not db.is_participant(event_id, session['id']):
-            db.add_participant(event_id, session['id'])
+        try:
+            if not db.is_participant(event_id, session['id']):
+                db.add_participant(event_id, session['id'])
+        except pymysql.MySQLError:
+            app.logger.exception("Database error in participate")
+            add_alert("Could not join the event, please try again.")
         return redirect(url_for("event_visitor", event_id=event_id))
 
     @app.route("/increase_drink_counter/<int:event_id>/<int:user_id>")
     @require_login
     def increase_drink_counter(event_id, user_id):
         db = DbConnection()
-        cur_amount_of_drinks = db.get_amount_of_drinks(event_id, user_id)
-        db.set_amount_of_drinks(event_id, user_id, cur_amount_of_drinks + 1)
+        try:
+            cur_amount_of_drinks = db.get_amount_of_drinks(event_id, user_id)
+            db.set_amount_of_drinks(event_id, user_id, cur_amount_of_drinks + 1)
+        except pymysql.MySQLError:
+            app.logger.exception("Database error in increase_drink_counter")
+            add_alert("Could not update the drink counter, please try again.")
 
         return redirect(url_for("event_visitor", event_id=event_id))
 
@@ -62,8 +76,12 @@ def register_home_routes(app):
     @require_login
     def decrease_drink_counter(event_id, user_id):
         db = DbConnection()
-        cur_amount_of_drinks = db.get_amount_of_drinks(event_id, user_id)
-        if cur_amount_of_drinks > 0:
-            db.set_amount_of_drinks(event_id, user_id, cur_amount_of_drinks - 1)
+        try:
+            cur_amount_of_drinks = db.get_amount_of_drinks(event_id, user_id)
+            if cur_amount_of_drinks > 0:
+                db.set_amount_of_drinks(event_id, user_id, cur_amount_of_drinks - 1)
+        except pymysql.MySQLError:
+            app.logger.exception("Database error in decrease_drink_counter")
+            add_alert("Could not update the drink counter, please try again.")
 
         return redirect(url_for("event_visitor", event_id=event_id))
