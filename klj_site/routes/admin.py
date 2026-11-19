@@ -22,7 +22,21 @@ def register_admin_routes(app):
     @require_admin
     def approve_user(username):
         db = DbConnection()
-        db.approve_user(username)  # Runs your Python function
+        db.approve_user(username)
+        return jsonify({"status": "ok"}), 200
+
+    @app.route("/decline_user/<string:username>", methods=["POST"])
+    @require_admin
+    def decline_user(username):
+        db = DbConnection()
+        db.decline_user(username)
+        return jsonify({"status": "ok"}), 200
+
+    @app.route("/remove_user/<string:username>", methods=['POST'])
+    @require_admin
+    def remove_user(username):
+        db = DbConnection()
+        db.remove_user(username)
         return jsonify({"status": "ok"}), 200
 
     @app.route("/newEvent", methods=['GET', 'POST'])
