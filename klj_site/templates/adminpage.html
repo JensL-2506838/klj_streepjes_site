@@ -8,7 +8,12 @@
     <h1>adminpage</h1>
     <ul>
       {% for user in users %}
-        <li>{{ user['username'] }} - {{ user['id'] }}</li>
+        <li>
+            {{ user['username'] }} - {{ user['id'] }}
+            <form action="{{ url_for('remove_user', username=user['username']) }}" method="POST" style="display:inline;">
+                <button type="submit">Remove</button>
+            </form>
+        </li>
       {% endfor %}
     </ul>
 
@@ -19,6 +24,9 @@
                 {{ request['username'] }}
                 <form action="{{ url_for('approve_user', username=request['username']) }}" method="POST" style="display:inline;">
                     <button type="submit">Approve</button>
+                </form>
+                <form action="{{ url_for('decline_user', username=request['username']) }}" method="POST" style="display:inline;">
+                    <button type="submit">Decline</button>
                 </form>
             </li>
         {% endfor %}
@@ -38,5 +46,11 @@
             </li>
         {% endfor %}
     </ul>
+
+    {% for message in alertMessages %}
+        <script>
+            alert({{ message | tojson }});
+        </script>
+    {% endfor %}
 </body>
 </html>
