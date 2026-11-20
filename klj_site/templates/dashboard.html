@@ -1,21 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Dashboard</title>
-</head>
-<body>
-    <h1>Dashboard</h1>
-    <h2>Current events</h2>
-    <ul>
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <h1 class="h3 mb-1">Dashboard</h1>
+    <p class="text-secondary mb-4">Current events</p>
+
+    <div class="d-grid gap-3">
         {% for event in events %}
-            <li>
-                Title: {{ event['name'] }} / Price: {{ event['price'] }}
-                <a href="{{ url_for('event_visitor', event_id=event['id']) }}">
-                    <button type="button">Visit</button>
-                </a>
-            </li>
+            <div class="card shadow-sm">
+                <div class="card-body d-flex align-items-center justify-content-between gap-3">
+                    <div class="min-w-0">
+                        <h2 class="h5 mb-1 text-break">{{ event['name'] }}</h2>
+                        <span class="badge text-bg-secondary">Price: {{ event['price'] }}</span>
+                    </div>
+                    <a class="btn btn-primary px-4" href="{{ url_for('event_visitor', event_id=event['id']) }}">Visit</a>
+                </div>
+            </div>
+        {% else %}
+            <p class="text-secondary text-center py-5">There are no events yet.</p>
         {% endfor %}
-    </ul>
-</body>
-</html>
+    </div>
+{% endblock %}
