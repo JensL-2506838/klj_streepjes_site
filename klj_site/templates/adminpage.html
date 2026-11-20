@@ -1,56 +1,77 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Adminpage</title>
-</head>
-<body>
-    <h1>adminpage</h1>
-    <ul>
-      {% for user in users %}
-        <li>
-            {{ user['username'] }} - {{ user['id'] }}
-            <form action="{{ url_for('remove_user', user_id=user['id']) }}" method="POST" style="display:inline;">
-                <button type="submit">Remove</button>
-            </form>
-        </li>
-      {% endfor %}
-    </ul>
+{% extends "base.html" %}
+{% block title %}Adminpage{% endblock %}
 
-    <h2>requested users</h2>
-    <ul>
-        {% for request in requested_users %}
-            <li>
-                {{ request['username'] }}
-                <form action="{{ url_for('approve_user', request_id=request['id']) }}" method="POST" style="display:inline;">
-                    <button type="submit">Approve</button>
-                </form>
-                <form action="{{ url_for('decline_user', request_id=request['id']) }}" method="POST" style="display:inline;">
-                    <button type="submit">Decline</button>
-                </form>
-            </li>
-        {% endfor %}
-    </ul>
+{% block content %}
+    <h1 class="h3 mb-4">Admin page</h1>
 
-    <h2>Events</h2>
-    <a href="{{ url_for('newEvent') }}">
-        <button type="button">Create new event</button>
-    </a>
-    <ul>
-        {% for event in events %}
-            <li>
-                Title: {{ event['name'] }} / Price: {{ event['price'] }}
-                <a href="{{ url_for('deleteEvent', event_id=event['id']) }}">
-                    <button type="button">Delete</button>
-                </a>
-            </li>
-        {% endfor %}
-    </ul>
+    {# ---- Users ---- #}
+    <h2 class="h6 text-uppercase text-secondary mb-3">Users</h2>
+    <div class="card shadow-sm mb-4">
+        <ul class="list-group list-group-flush">
+            {% for user in users %}
+                <li class="list-group-item d-flex align-items-center justify-content-between gap-3 py-3">
+                    <span class="text-break">
+                        {{ user['username'] }}
+                        <small class="text-secondary">#{{ user['id'] }}</small>
+                    </span>
+                    <form class="m-0" action="{{ url_for('remove_user', user_id=user['id']) }}" method="POST">
+                        <button class="btn btn-outline-danger btn-sm" type="submit">Remove</button>
+                    </form>
+                </li>
+            {% else %}
+                <li class="list-group-item text-secondary">No users.</li>
+            {% endfor %}
+        </ul>
+    </div>
 
+    {# ---- Account requests ---- #}
+    <h2 class="h6 text-uppercase text-secondary mb-3">Requested users</h2>
+    <div class="card shadow-sm mb-4">
+        <ul class="list-group list-group-flush">
+            {% for request in requested_users %}
+                <li class="list-group-item d-flex flex-wrap align-items-center justify-content-between gap-3 py-3">
+                    <span class="text-break">{{ request['username'] }}</span>
+                    <div class="d-flex gap-2">
+                        <form class="m-0" action="{{ url_for('approve_user', request_id=request['id']) }}" method="POST">
+                            <button class="btn btn-success btn-sm" type="submit">Approve</button>
+                        </form>
+                        <form class="m-0" action="{{ url_for('decline_user', request_id=request['id']) }}" method="POST">
+                            <button class="btn btn-outline-danger btn-sm" type="submit">Decline</button>
+                        </form>
+                    </div>
+                </li>
+            {% else %}
+                <li class="list-group-item text-secondary">No pending requests.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    {# ---- Events ---- #}
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h2 class="h6 text-uppercase text-secondary m-0">Events</h2>
+        <a class="btn btn-primary btn-sm" href="{{ url_for('newEvent') }}">+ New event</a>
+    </div>
+    <div class="card shadow-sm">
+        <ul class="list-group list-group-flush">
+            {% for event in events %}
+                <li class="list-group-item d-flex align-items-center justify-content-between gap-3 py-3">
+                    <span class="text-break">
+                        {{ event['name'] }}
+                        <small class="text-secondary d-block">Price: {{ event['price'] }}</small>
+                    </span>
+                    <a class="btn btn-outline-danger btn-sm" href="{{ url_for('deleteEvent', event_id=event['id']) }}">Delete</a>
+                </li>
+            {% else %}
+                <li class="list-group-item text-secondary">No events.</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
+
+{% block scripts %}
     {% for message in alertMessages %}
         <script>
             alert({{ message | tojson }});
         </script>
     {% endfor %}
-</body>
-</html>
+{% endblock %}

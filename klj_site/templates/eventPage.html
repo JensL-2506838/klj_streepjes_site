@@ -1,44 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>EventPage</title>
-</head>
-<body>
-    <h1>event page</h1>
-    <h2>
-        {{ event_name }} - Price: {{ event_price }}
-        {% if not user_is_participant %}
-            <a href="{{ url_for('participate', event_id=event_id) }}">
-                <button type="button">Participate</button>
-            </a>
-        {% endif %}
-    </h2>
+{% extends "base.html" %}
+{% block title %}EventPage{% endblock %}
 
-    <ul>
+{% block content %}
+    {# Event title, price and the participate button #}
+    <div class="card shadow-sm mb-4">
+        <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <div>
+                <h1 class="h3 mb-2 text-break">{{ event_name }}</h1>
+                <span class="badge text-bg-secondary fs-6">Price: {{ event_price }}</span>
+            </div>
+            {% if not user_is_participant %}
+                <a class="btn btn-primary btn-lg" href="{{ url_for('participate', event_id=event_id) }}">Participate</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <h2 class="h6 text-uppercase text-secondary mb-3">Participants</h2>
+    <div class="d-grid gap-3">
         {% for participant in participants %}
-            <li>
-                {{ participant['username'] }}
-                <a href="{{ url_for('decrease_drink_counter', event_id=event_id, user_id=participant['id']) }}">
-                    <button type="button">-</button>
-                </a>
-                {{ participant['amount'] }}
-                <a href="{{ url_for('increase_drink_counter', event_id=event_id, user_id=participant['id']) }}">
-                    <button type="button">+</button>
-                </a>
-                {% if session['id'] == participant['id'] %}
-                    <a href="{{ url_for('pay', amount=participant['amount'], event_id=event_id) }}">
-                        <button type="button">Pay</button>
-                    </a>
-                {% endif %}
-            </li>
+            {# the row of the logged in user gets a coloured border #}
+            <div class="card shadow-sm {% if session['id'] == participant['id'] %}border-primary{% endif %}">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between gap-3">
+                        <span class="fw-semibold fs-5 text-break">{{ participant['username'] }}</span>
+                        <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                            <a class="btn btn-outline-secondary btn-counter" aria-label="Decrease"
+                               href="{{ url_for('decrease_drink_counter', event_id=event_id, user_id=participant['id']) }}">&minus;</a>
+                            <span class="amount fs-3 fw-bold">{{ participant['amount'] }}</span>
+                            <a class="btn btn-primary btn-counter" aria-label="Increase"
+                               href="{{ url_for('increase_drink_counter', event_id=event_id, user_id=participant['id']) }}">+</a>
+                        </div>
+                    </div>
+                    {% if session['id'] == participant['id'] %}
+                        <a class="btn btn-success w-100 mt-3" href="{{ url_for('pay', amount=participant['amount'], event_id=event_id) }}">Pay</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% else %}
+            <p class="text-secondary text-center py-4">Nobody has joined yet.</p>
         {% endfor %}
-    </ul>
+    </div>
+{% endblock %}
 
+{% block scripts %}
     {% for message in alertMessages %}
         <script>
             alert({{ message | tojson }});
         </script>
     {% endfor %}
-</body>
-</html>
+{% endblock %}
